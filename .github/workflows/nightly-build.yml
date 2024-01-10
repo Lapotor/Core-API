@@ -8,31 +8,54 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version to build'
+        description: 'Version to build. Keep in mind that this is a nightly build, so we add "-SNAPSHOT" to the end of the version automatically.'
         required: true
         type: string
 
 jobs:
-  get-version:
-    name: Get version
+  # get-version:
+  #   name: Get version
+  #   runs-on: ubuntu-latest
+  #   outputs:
+  #     version: ${{ steps.set-version-push.outputs.version || steps.set-version.outputs.version }}
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+  #     - name: Set short commit hash on push
+  #       if: github.event_name == 'push'
+  #       id: set-version-push
+  #       run: echo "version=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+  #     - name: Set version from input
+  #       if: github.event_name == 'workflow_dispatch'
+  #       id: set-version
+  #       run: echo "version=${{ github.event.inputs.version }}" >> "$GITHUB_OUTPUT"
+
+  get-latest-version:
+    name: Get latest version
     runs-on: ubuntu-latest
     outputs:
-      version: ${{ steps.set-version-push.outputs.version || steps.set-version.outputs.version }}
+      version: ${{ steps.increment-version.outputs.release || steps.set-version.outputs.release }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Set short commit hash on push
+      - name: Get latest release version
         if: github.event_name == 'push'
-        id: set-version-push
-        run: echo "version=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+        id: get-latest-version
+        uses: pozetroninc/github-action-get-latest-release@v0.7.0
+        with:
+          repository: ${{ github.repository }}
+
+      - name: Increment version
+        if: github.event_name == 'push'
+        id: increment-version
+        run: echo "release=$(echo ${{ steps.get-latest-version.outputs.release }} | awk -F. -v OFS=. '{$NF = $NF + 1;} 1')" >> "$GITHUB_OUTPUT"
+
       - name: Set version from input
         if: github.event_name == 'workflow_dispatch'
         id: set-version
-        run: echo "version=${{ github.event.inputs.version }}" >> "$GITHUB_OUTPUT"
+        run: echo "release=${{ github.event.inputs.version }}" >> "$GITHUB_OUTPUT"
 
   build-nightly:
     name: Build Nightly version
-    needs: get-version
+    needs: get-latest-version
     uses: ./.github/workflows/build.yml
     with:
-      version: ${{ needs.get-version.outputs.version }}
+      version: ${{ needs.get-latest-version.outputs.version }}-SNAPSHOT
