@@ -27,8 +27,11 @@ jobs:
           cache: 'maven'
           java-version: 8
 
+      - name: Set Project Version
+        run: mvn versions:set -DnewVersion=${{ inputs.version }}
+
       - name: Build with Maven
-        run: mvn source:jar -DapiVersion=${{ inputs.version }}
+        run: mvn source:jar
 
       - name: Deploy to GitHub Packages # Repository is set in pom.xml
         run: mvn deploy
