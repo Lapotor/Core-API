@@ -6,7 +6,7 @@
 
     <groupId>minevalley.core</groupId>
     <artifactId>api</artifactId>
-    <version>${apiVersion}</version>
+    <version>nightly</version>
     <packaging>jar</packaging>
 
     <build>
@@ -42,8 +42,6 @@
         <maven.compiler.target>8</maven.compiler.target>
 
         <dep.lombok.version>1.18.26</dep.lombok.version>
-
-        <apiVersion>nightly</apiVersion>
     </properties>
 
     <repositories>
