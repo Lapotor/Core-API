@@ -6,6 +6,11 @@ on:
       - testing
 
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to build'
+        required: true
+        type: string
 
 jobs:
   get-version:
