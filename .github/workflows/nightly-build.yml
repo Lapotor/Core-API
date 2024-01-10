@@ -46,7 +46,9 @@ jobs:
       - name: Increment version
         if: github.event_name == 'push'
         id: increment-version
-        run: echo "release=$(echo ${{ steps.get-latest-version.outputs.release }} | awk -F. -v OFS=. '{$NF = $NF + 1;} 1')" >> "$GITHUB_OUTPUT"
+        run: |
+          RELEASE_NAME=${{ steps.get-latest-version.outputs.release }}
+          echo "release=$(echo ${RELEASE_NAME#v} | awk -F. -v OFS=. '{$NF = $NF + 1;} 1')" >> "$GITHUB_OUTPUT"
 
       - name: Set version from input
         if: github.event_name == 'workflow_dispatch'
