@@ -19,6 +19,8 @@ jobs:
     outputs:
       version: ${{ steps.set-version-push.outputs.version || steps.set-version.outputs.version }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Set short commit hash on push
         if: github.event_name == 'push'
         id: set-version-push
