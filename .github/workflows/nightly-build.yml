@@ -24,11 +24,11 @@ jobs:
       - name: Set short commit hash on push
         if: github.event_name == 'push'
         id: set-version-push
-        run: echo ::set-output name=version::$(git rev-parse --short HEAD)
+        run: echo "version=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
       - name: Set version from input
         if: github.event_name == 'workflow_dispatch'
         id: set-version
-        run: echo ::set-output name=version::${{ github.event.inputs.version }}
+        run: echo "version=${{ github.event.inputs.version }}" >> "$GITHUB_OUTPUT"
 
   build-nightly:
     name: Build Nightly version
