@@ -32,7 +32,7 @@ jobs:
 
       - name: Build with Maven with classifier
         if: github.event_name != 'release'
-        run: mvn -B clean package -Dproject.classifier=$GITHUB_REF_NAME
+        run: mvn -B clean package -Dproject.classifier=${{ github.ref_name }}
 
       - name: Build with Maven without classifier (only on Release)
         if: github.event_name == 'release'
