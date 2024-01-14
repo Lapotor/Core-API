@@ -2,9 +2,8 @@ name: Core-API | Nightly Builder
 
 on:
   push:
-    branches-ignore:
-      - master
-      - main
+    branches:
+      - '**'
 
   workflow_dispatch:
 
