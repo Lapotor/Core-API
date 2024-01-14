@@ -44,3 +44,4 @@ jobs:
     uses: ./.github/workflows/build.yml
     with:
       version: ${{ needs.get-latest-version.outputs.version }}-SNAPSHOT
+      isRelease: false
