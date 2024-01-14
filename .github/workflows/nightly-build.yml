@@ -13,7 +13,7 @@ jobs:
     name: Get latest version
     runs-on: ubuntu-latest
     outputs:
-      version: ${{ steps.increment-version.outputs.release }}
+      version: ${{ github.ref_name }}_${{ steps.increment-version.outputs.release }}
     steps:
       - name: Get latest release version
         if: github.event_name == 'push'
